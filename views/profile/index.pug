@@ -1,0 +1,28 @@
+extends ../layout.pug
+
+
+block content
+  .row
+    .col.s12.m6
+      img(src="/img/avar")
+    .col.s12.m6
+      
+        
+
+
+block script
+  script.
+    $(document).ready(function(){
+      $('.slider').slider();
+    });
+    
+    $("##{nameSource}").addClass("activesoruce");
+    function addFav(title, urlImg, link) {
+        var obj = {title: title, urlImg: urlImg, link: link}
+        console.log(obj);
+        
+        var db = firebase.database();
+        firebase.database().ref("/newsFav/#{idUser}").push(obj);
+
+        M.toast({html: 'Se agrego a favoritos'}, {inDuration: 300}, {outDuration: 300})
+    }

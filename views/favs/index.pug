@@ -1,0 +1,80 @@
+extends ../layout.pug
+
+
+block content
+
+  .row
+  .row#source
+    h2 Favs 
+  
+    
+
+  
+  .container
+    .row#contCuad
+    each item in articlesResponse.articles
+      //- .col.s12.m4
+      //-   .card
+      //-     -var url = "background:url("+item.urlToImage+")"
+      //-     if item.urlToImage == null
+      //-       .card-image(style="background:url(/img/new.jpg);")
+      //-         span.card-title
+      //-     else
+      //-       .card-image(style=url)
+      //-         span.card-title
+      //-     .card-content
+      //-       p=item.title
+      //-       -var aux = JSON.stringify(item)
+      //-       -var title = "addFav('uno')"
+      //-       button(onclick=`addFav('${item.title}','${item.urlToImage}','${item.url}')` ) add
+      //-     .card-action
+      //-       a(href=item.url, target="_blank") Ir a la nota
+    .row
+  .row#source
+    h2 Sources
+    .row
+      .col.s12.m2.contsource.offset-m3
+        a(href="/news/source/abc-news") 
+          img(src="/img/abc.png")
+      .col.s12.m2.contsource  
+        a(href="/news/source/aftenposten") 
+          img(src="/img/aften.png")
+      .col.s12.m2.contsource  
+        a(href="/news/source/ary-news") 
+          img(src="/img/ary.jpg")
+        
+
+
+block script
+  script.
+    $(document).ready(function(){
+      $('.slider').slider();
+    });
+    //- function addFav(title, urlImg, link) {
+    //-     var obj = {title: title, urlImg: urlImg, link: link}
+    //-     console.log(obj);
+        
+    //-     var db = firebase.database();
+    //-     firebase.database().ref("/newsFav/#{idUser}").push(obj);
+
+    //-     M.toast({html: 'Se agrego a favoritos'}, {inDuration: 300}, {outDuration: 300})
+    //- }
+   
+
+    // Get a database reference to our posts
+    var db = firebase.database();
+    var ref = db.ref("newsFav/#{idUser}");
+
+    // Attach an asynchronous callback to read the data at our posts reference
+    ref.on("value", function(snapshot) {
+      snapshot.forEach(function(element) {
+        console.log("----",element.val().title);
+        $("#contCuad").append("<div class='col s12 m4'><div class='card'><div class='card-image' style='background:url("+element.val().urlImg+")'><span class='card-title'></span></div><div class='card-content'><p>"+element.val().title+"</p></div><div class='card-action'><a href='"+element.val().url+"' target='_blank'>Ir a la nota</a></div></div></div>")
+        
+        
+      });
+      
+
+    }, function (errorObject) {
+      console.log("The read failed: " + errorObject.code);
+    });

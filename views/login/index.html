@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="shortcut icon" href="">
+    <link rel="apple-touch-icon" href="">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style-login.css">
+  </head>
+  <body style="background:url(/img/background-login.gif);background-size:cover;background-repeat: no-repeat;">
+    <div class="row">
+      <div class="container">
+        <div class="col s12 m6 offset-m3 contform">
+          <div class="row">
+            <div class="input-field col s12">
+              <p>Email</p>
+              <input class="validate" id="email" type="email" name="email">
+            </div>
+          </div>
+          <div class="row">
+            <div class="input-field col s12">
+              <p>Password</p>
+              <input class="validate" id="password" type="password" name="password">
+            </div>
+          </div>
+          <button class="action-button btn" id="send">Send</button>
+          <div class="row"><a class="waves-effect waves-light modal-trigger" href="#modal1">Registry</a>
+            <!-- Modal Structure-->
+            <div class="modal" id="modal1">
+              <div class="modal-content">
+                <h2>Registry</h2>
+                <div class="row">
+                  <div class="input-field col s12 m6">
+                    <p>Name</p>
+                    <input class="validate" id="name" type="text" name="name">
+                  </div>
+                  <div class="input-field col s12 m6">
+                    <p>Phone</p>
+                    <input class="validate" id="phone" type="text" name="phone">
+                  </div>
+                  <div class="input-field col s12 m6">
+                    <p>Email</p>
+                    <input class="validate" id="emailreg" type="email" name="email">
+                  </div>
+                  <div class="input-field col s12 m6">
+                    <p>Password</p>
+                    <input class="validate" id="passwordreg" type="password" name="password">
+                  </div>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button class="action-button btn" id="registrar">registry</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.4.2/vue.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      $('.modal').modal();
+      var config = {
+        apiKey: "AIzaSyBiTEsu89T-zfaOSsOiyOZjgE-7hOvzFDA",
+        authDomain: "news-examination.firebaseapp.com",
+        databaseURL: "https://news-examination.firebaseio.com",
+        projectId: "news-examination",
+        storageBucket: "news-examination.appspot.com",
+        messagingSenderId: "211079417360"
+      };
+      firebase.initializeApp(config);
+      
+      $("#send").click(function(){
+          var email = $("#email").val();
+          var password = $("#password").val();
+          var uid;
+          var email;
+          var phone;
+          var name;
+          firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // [START_EXCLUDE]
+          if (errorCode == 'auth/weak-password') {
+           
+            
+            console.log(error);
+            firebase.auth().onAuthStateChanged(function(user) {
+              if (user) {
+                // User is signed in.
+              } else {
+                // No user is signed in.
+              }
+            });
+          } else if (errorCode == 'auth/wrong-password') {
+             M.toast({html: 'la contraseña es incorrecta'}, {inDuration: 300}, {outDuration: 300})
+          }else {
+            console.log(errorMessage);
+          }
+          console.log(error);
+          // [END_EXCLUDE]
+        });
+        
+        
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              
+              
+              email = user.email;
+              uid = user.uid;
+                
+                console.log("-----*****",uid);
+                var db = firebase.database();
+                var ref = db.ref("users/"+uid);
+                
+                ref.on("value", function(snapshot) {
+                    console.log("----",snapshot.val());
+                    console.log("----",snapshot.val().email);
+                    name = snapshot.val().name;
+                    phone = snapshot.val().phone;
+                    $.ajax({
+                      type: "POST",
+                      url: "/login",
+                      data:{
+                        idUser:uid,
+                        email:email,
+                        phone: phone,
+                        name: name
+                      },
+                      success:function(response){
+                        location.href = "/news";
+                      },error:function(error){
+      
+                      }
+      
+                    });
+                }, function (errorObject) {
+                  console.log("The read failed: " + errorObject.code);
+                });
+                
+                
+              // ...
+            } else {
+              // User is signed out.
+              // ...
+              console.log("no es usuarios");
+            }
+          });
+          
+          
+          
+      
+      
+      
+      
+      });
+      $("#registrar").click(function(){
+          var name = $("#name").val();
+          var phone = $("#phone").val();
+          var email = $("#emailreg").val();
+          var password = $("#passwordreg").val();
+            console.log(email+"---");
+          if(name == undefined || name == ""){
+            console.log("entro");
+            M.toast({html: 'insert name '}, {inDuration: 300}, {outDuration: 300})            
+            return;
+          }
+          if(phone == undefined || phone == ""){
+            M.toast({html: 'insert phone'}, {inDuration: 300}, {outDuration: 300});         
+            return;
+          }
+          if(email == undefined || email == ""){
+            console.log("entro");
+            M.toast({html: 'insert email'}, {inDuration: 300}, {outDuration: 300})            
+            return;
+          }
+          if(password == undefined || password == ""){
+            M.toast({html: 'insert password'}, {inDuration: 300}, {outDuration: 300});         
+            return;
+          }
+          firebase.auth().createUserWithEmailAndPassword(email, password).catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // [START_EXCLUDE]
+          if (errorCode == 'auth/weak-password') {
+           
+            console.log(error);
+            firebase.auth().onAuthStateChanged(function(user) {
+              if (user) {
+                // User is signed in.
+              } else {
+                // No user is signed in.
+              }
+            });
+          } else if (errorCode == 'auth/wrong-password') {
+             M.toast({html: 'la contraseña es incorrecta'}, {inDuration: 300}, {outDuration: 300})
+          }else {
+            console.log(errorMessage);
+          }
+          console.log(error);
+          // [END_EXCLUDE]
+        });
+       
+        
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+              // User is signed in.
+              var email = user.email;
+              var uid = user.uid;
+              var obj = {name: name, phone: phone, email: email}
+                
+                
+                var db = firebase.database();
+                firebase.database().ref("/users/"+uid).set(obj);
+      
+                M.toast({html: 'Registry complet'}, {inDuration: 300}, {outDuration: 300})
+      
+              console.log("----"+uid);
+              var form_data = new FormData();
+              form_data.append("idUser", uid);
+              form_data.append("email", email);
+                $.ajax({
+                  type: "POST",
+                  url: "/login",
+                  data:{
+                    idUser:uid,
+                    email:email,
+                    name: name, 
+                    phone: phone
+                  },
+                  success:function(response){
+                    location.href = "/news";
+                  },error:function(error){
+      
+                  }
+      
+                });
+              // ...
+            } else {
+              // User is signed out.
+              // ...
+              console.log("no es usuarios");
+            }
+          });
+      
+      
+      
+      
+      });
+    </script>
+  </body>
+</html>

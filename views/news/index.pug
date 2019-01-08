@@ -1,0 +1,87 @@
+extends ../layout.pug
+
+
+block content
+  .row
+    br
+  .slider
+    ul.slides
+      -var cont = 0
+      each item1 in articlesResponse.articles
+        if cont < 7
+          if !item1.urlToImage == null || !item1.urlToImage == "" 
+            li
+              img(src=item1.urlToImage)
+              .caption.center-align
+                h3= item1.title
+                a(href=item1.url target="_blank") Ir a la noticia
+        -cont++
+  .row
+  .row#source
+    h2 Source 
+    .row
+      .col.s12.m2.contsource.offset-m3
+        a(href="/news/source/abc-news")#abc-news
+          img(src="/img/abc.png")
+      .col.s12.m2.contsource  
+        a(href="/news/source/ars-technica")#ars-technica
+          img(src="/img/apple-touch-icon.png")
+      .col.s12.m2.contsource  
+        a(href="/news/source/associated-press")#ssociated-press
+          img(src="/img/128.png")
+    
+    ul.collapsible
+      li
+        .collapsible-header.center
+          i.material-icons search
+          | Search
+        .collapsible-body
+          .row
+            form(method="post" action="/news/search")
+              .col.s8.m4.offset-m3
+                input#search(placeholder='Search')
+              .col.s4.m2.input-field(style="text-align:left;")
+                input.action-button.btn(type="submit" value="Search")
+
+
+    .row
+      h2 News 
+  .container
+    each item in articlesResponse.articles
+      .col.s12.m4
+        .card
+          
+          if item.urlToImage == null
+            .card-image(style="background:url(/img/new.jpg);")
+              span.card-title
+          else
+            -var url = "background:url("+item.urlToImage+")"
+            .card-image(style=url)
+              span.card-title
+          .card-content
+            p=item.title
+            -var aux = JSON.stringify(item)
+            -var title = "addFav('uno')"
+            button(onclick=`addFav('${item.title}','${item.urlToImage}','${item.url}')` ) fav
+          .card-action
+            a(href=item.url, target="_blank") Ir a la nota
+        
+
+
+block script
+  script.
+    $(document).ready(function(){
+      $('.slider').slider();
+      $('.collapsible').collapsible();
+    });
+    
+    $("##{nameSource}").addClass("activesoruce");
+    function addFav(title, urlImg, link) {
+        var obj = {title: title, urlImg: urlImg, link: link}
+        console.log(obj);
+        
+        var db = firebase.database();
+        firebase.database().ref("/newsFav/#{idUser}").push(obj);
+
+        M.toast({html: 'Se agrego a favoritos'}, {inDuration: 300}, {outDuration: 300})
+    }

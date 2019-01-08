@@ -1,0 +1,21 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif; }
+
+a {
+  color: #00B7FF; }
+
+.contform {
+  background: rgba(10, 40, 60, 0.9); }
+  .contform p {
+    color: white; }
+
+.modal-trigger {
+  width: 100%;
+  text-align: right;
+  color: white; }
+
+.modal {
+  background: #ffab40; }
+  .modal h2 {
+    color: white; }

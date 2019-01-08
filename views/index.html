@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="shortcut icon" href="">
+    <link rel="apple-touch-icon" href="">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:400,500,600,700" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/css/materialize.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+  </head>
+  <body>
+    <nav>
+      <div class="nav-wrapper"><a class="brand-logo" href="/news"> <img src="/img/logo_leyenda.png"></a><a class="waves-effect waves-light modal-trigger profile" href="#modal1"><i class="material-icons">person</i></a><a class="sidenav-trigger" href="#" data-target="mobile-demo"><i class="material-icons">menu</i></a></div>
+    </nav>
+    <div class="sidenav" id="mobile-demo"><a class="brand-logo" href="/news"> <img src="/img/logo_leyenda.png"></a>
+      <ul style="    padding-top: 12px;">
+        <li><a href="/news">News</a></li>
+        <li><a href="/favs">Favs</a></li>
+        <li><a href="/logout">logout</a></li>
+      </ul>
+    </div>
+    <div class="row" style="padding-top:100px;">
+      <h1></h1>
+      <p>Welcome to </p>
+    </div>
+    <div class="modal" id="modal1">
+      <div class="modal-content perfil center">
+        <h4>Perfil</h4><br>
+        <hr>
+        <p>Name : <span></span></p>
+        <p>Phone : <span></span></p>
+        <p>Email : <span></span></p>
+      </div>
+      <div class="modal-footer"></div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.4/js/materialize.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.7.0/firebase.js"></script>
+    <script>
+      $(document).ready(function(){
+        $('.sidenav').sidenav();
+        $('.modal').modal();
+      });
+      var config = {
+        apiKey: "AIzaSyBiTEsu89T-zfaOSsOiyOZjgE-7hOvzFDA",
+        authDomain: "news-examination.firebaseapp.com",
+        databaseURL: "https://news-examination.firebaseio.com",
+        projectId: "news-examination",
+        storageBucket: "news-examination.appspot.com",
+        messagingSenderId: "211079417360"
+      };
+      firebase.initializeApp(config);
+    </script>
+  </body>
+</html>
